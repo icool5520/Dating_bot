@@ -22,7 +22,10 @@ def start_msg(message):
 			if db_cmd.check_user_state(uid):
 				bot.send_message(chat_id=cid, text="Главное меню", reply_markup=markup.gen_markup_user())
 			else:
-				bot.send_message(chat_id=cid, text="Для пользования ботом необходимо одобрение Администратора")
+				bot.send_message(chat_id=cid, text="Вы зарегистрированы, однако для полноценного доступа к функциям " +
+												   "бота необходимо одобрение Администратора")
+				bot.send_message(chat_id=cid, text="А тем временем по команде /EditProfile Вы можете заполнить" +
+												   " информацию в своем профиле")
 	except Exception as ex:
 		print('start_msg:', ex)
 
