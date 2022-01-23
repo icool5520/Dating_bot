@@ -19,8 +19,10 @@ def start_msg(message):
 		name = f'{first_name} {last_name}'
 		if cid == uid:
 			db_cmd.check_user_id(uid, name.strip())
-
-			bot.send_message(chat_id=cid, text="Главное меню", reply_markup=markup.gen_markup_user())
+			if db_cmd.check_user_state(uid):
+				bot.send_message(chat_id=cid, text="Главное меню", reply_markup=markup.gen_markup_user())
+			else:
+				bot.send_message(chat_id=cid, text="Для пользования ботом необходимо одобрение Администратора")
 	except Exception as ex:
 		print('start_msg:', ex)
 
