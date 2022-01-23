@@ -69,21 +69,42 @@ def check_admin(_user_id):
 		cur = conn.cursor()
 		cur.execute(sql)
 		data = cur.fetchone()
-		
 		if data is not None:
 			check = True
 		else:
 			cur.close()
 	except Exception as ex:
-		print('check_user_id:', ex)
+		print('check_admin:', ex)
 	finally:
 		if conn is not None:
 			conn.close()
-	
+	return check
+
+
+def check_user_state(_user_id):
+	db_file = "db.db"
+	conn = None
+	check = False
+	try:
+		sql = f"""SELECT state FROM users WHERE user_id = {_user_id}"""
+		conn = sqlite3.connect(db_file)
+		cur = conn.cursor()
+		cur.execute(sql)
+		data = cur.fetchone()
+		if data[0] != 'inactive':
+			check = True
+		else:
+			cur.close()
+	except Exception as ex:
+		print('check_user_state:', ex)
+	finally:
+		if conn is not None:
+			conn.close()
 	return check
 
 
 def get_users_inactive():
+	# Достаем список неактивных юзеров для админа
 	db_file = "db.db"
 	conn = None
 	data = None
