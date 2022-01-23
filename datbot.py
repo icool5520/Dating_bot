@@ -41,6 +41,22 @@ def admin_start(message):
 		print('admin_start:', ex)
 
 
+# @bot.message_handler(commands=['EditProfile'])
+# def admin_start(message):
+# 	try:
+# 		cid = message.chat.id
+# 		uid = message.from_user.id
+# 		if cid == uid and db_cmd.check_admin(uid):
+#
+# #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#
+# 			db_cmd.upd_state_admin(uid, "menu_admin")
+# 			bot.send_message(chat_id=cid, text="Меню администратора", reply_markup=markup.gen_markup_admin())
+# 	except Exception as ex:
+# 		print('admin_start:', ex)
+
+
+
 @bot.callback_query_handler(func=lambda call: call.data.endswith("Back_to_admin_menu"))
 def admin_start_back(call):
 	try:
@@ -120,6 +136,14 @@ def delete_user(call):
 			db_cmd.delete_user(int(user_to_delete_id))
 	except Exception as ex:
 		print('delete_user:', ex)
+
+#
+# def profile_display(_user_id):
+# 	try:
+# 		cid = call.message.chat.id
+# 		uid = call.from_user.id
+# 		if cid == uid:
+		# Делаем вывод профиля==============================================
 
 
 if __name__ == '__main__':
