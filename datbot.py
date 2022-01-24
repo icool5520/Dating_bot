@@ -41,20 +41,104 @@ def admin_start(message):
 		print('admin_start:', ex)
 
 
-# @bot.message_handler(commands=['EditProfile'])
-# def admin_start(message):
-# 	try:
-# 		cid = message.chat.id
-# 		uid = message.from_user.id
-# 		if cid == uid and db_cmd.check_admin(uid):
-#
-# #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#
-# 			db_cmd.upd_state_admin(uid, "menu_admin")
-# 			bot.send_message(chat_id=cid, text="Меню администратора", reply_markup=markup.gen_markup_admin())
-# 	except Exception as ex:
-# 		print('admin_start:', ex)
+@bot.message_handler(commands=['edit_profile'])
+def edit_profile(message):
+	try:
+		cid = message.chat.id
+		uid = message.from_user.id
+		if cid == uid:
+			db_cmd.upd_state_user(uid, "view_profile")
+			profile_data = db_cmd.get_user_profile(uid)
+			bot.send_message(chat_id=cid, text=f"Мой профиль\n\nИмя: {profile_data[0]}\nВозраст: {profile_data[1]}" +
+							 f"\nГород: {profile_data[2]}\nО себе: {profile_data[3]}",
+							 reply_markup=markup.gen_markup_profile())
+	except Exception as ex:
+		print('edit_profile:', ex)
 
+
+@bot.callback_query_handler(func=lambda call: call.data == "edit_profile")
+def callback_edit_profile(call):
+	try:
+		cid = call.message.chat.id
+		uid = call.from_user.id
+		if cid == uid:
+			db_cmd.upd_state_user(uid, "edit_profile_name")
+			bot.send_message(chat_id=cid, text="Введите Имя (оставьте поле пустым чтобы оставить текущее имя):")
+	except Exception as ex:
+		print('callback_edit_profile:', ex)
+
+
+@bot.message_handler(content_types=["text"])
+def edit_profile_name(message):
+	cid = message.chat.id
+	uid = message.from_user.id
+	print(db_cmd.get_state_user(uid)[0] == "edit_profile_name", 'edit_profile_name')
+	try:
+		if cid == uid and db_cmd.get_state_user(uid)[0] == "edit_profile_name":
+			if message.text != '':
+				global profile_data
+				profile_data = [message.text.replace('*', '')]
+			else:
+				profile_data = [db_cmd.get_name_user(uid)]
+			db_cmd.upd_state_user(uid, "edit_profile_age")
+			bot.send_message(chat_id=cid, text="Введите Ваш возраст:")
+	except Exception as ex:
+		print('edit_profile_name:', ex)
+
+
+
+def edit_profile_age(message):
+	cid = message.chat.id
+	uid = message.from_user.id
+	print(db_cmd.get_state_user(uid)[0])
+	try:
+		if cid == uid and db_cmd.get_state_user(uid)[0] == "edit_profile_age":
+			profile_data.append(message.text.replace('*', ''))
+			db_cmd.upd_state_user(uid, "edit_profile_city")
+			bot.send_message(chat_id=cid, text="Введите город:")
+	except Exception as ex:
+		print('callback_edit_age:', ex)
+
+
+
+def edit_profile_age(message):
+	cid = message.chat.id
+	uid = message.from_user.id
+	print(db_cmd.get_state_user(uid)[0])
+	try:
+		if cid == uid and db_cmd.get_state_user(uid)[0] == "edit_profile_city":
+			profile_data.append(message.text.replace('*', ''))
+			db_cmd.upd_state_user(uid, "edit_profile_about")
+			bot.send_message(chat_id=cid, text="Введите данные о себе:")
+	except Exception as ex:
+		print('callback_edit_age:', ex)
+
+
+
+def edit_profile_age(message):
+	cid = message.chat.id
+	uid = message.from_user.id
+	print(db_cmd.get_state_user(uid)[0])
+	try:
+		if cid == uid and db_cmd.get_state_user(uid)[0] == "edit_profile_about":
+			profile_data.append(message.text.replace('*', ''))
+			db_cmd.upd_state_user(uid, "start")
+
+			bot.send_message(chat_id=cid, text="Done!")
+	except Exception as ex:
+		print('callback_edit_age:', ex)
+
+
+# @bot.callback_query_handler(func=lambda call: call.data.endswith("Back_to_user_menu"))
+# def edit_profile(call):
+# 	try:
+# 		cid = call.message.chat.id
+# 		uid = call.from_user.id
+# 		if cid == uid:
+# 			bot.send_message(chat_id=cid, text="Меню администратора", reply_markup=markup.gen_markup_admin())
+# 			#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# 	except Exception as ex:
+# 		print('admin_start_back:', ex)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.endswith("Back_to_admin_menu"))
@@ -100,12 +184,12 @@ def activate_users(call):
 		if cid == uid and db_cmd.get_state_admin(uid)[0] == 'activate_user':
 			if user_to_activate_id.lower() == 'all':
 				bot.answer_callback_query(call.id, f'Все пользователи активированы')
-				db_cmd.upd_state_users(tuple([i[0] for i in list_users_inactive]), "start")
+				db_cmd.upd_state_inactive_users(tuple([i[0] for i in list_users_inactive]), "start")
 			elif user_to_activate_id.lower() == 'back':
 				pass
 			else:
 				bot.answer_callback_query(call.id, f'Пользователь с id: {user_to_activate_id} активирован')
-				db_cmd.upd_state_users((int(user_to_activate_id),), "start")
+				db_cmd.upd_state_inactive_users((int(user_to_activate_id),), "start")
 	except Exception as ex:
 		print('activate_users:', ex)
 
@@ -136,14 +220,6 @@ def delete_user(call):
 			db_cmd.delete_user(int(user_to_delete_id))
 	except Exception as ex:
 		print('delete_user:', ex)
-
-#
-# def profile_display(_user_id):
-# 	try:
-# 		cid = call.message.chat.id
-# 		uid = call.from_user.id
-# 		if cid == uid:
-		# Делаем вывод профиля==============================================
 
 
 if __name__ == '__main__':

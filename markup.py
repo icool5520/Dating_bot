@@ -33,6 +33,21 @@ def gen_markup_user():
 		return markup
 
 
+def gen_markup_profile():
+	try:
+		markup = types.InlineKeyboardMarkup()
+
+		btn1 = types.InlineKeyboardButton(text="Редактировать профиль", callback_data='edit_profile')
+		btn2 = types.InlineKeyboardButton(text='<< Назад', callback_data='delete_user:Back_to_user_menu')
+		markup.add(btn1)
+		markup.add(btn2)
+	except Exception as ex:
+		print('gen_markup_profile:', ex)
+	finally:
+		return markup
+
+
+
 def gen_markup_users_inactive(_list_users_inactive):
 	try:
 		markup = types.InlineKeyboardMarkup()
