@@ -9,10 +9,8 @@ def gen_markup_admin():
 		btn3 = types.InlineKeyboardButton(text="Добавить анкету", callback_data='add_dating_profile')
 		btn4 = types.InlineKeyboardButton(text="Удалить анкету", callback_data='delete_dating_profile')
 		
-		markup.add(btn1)
-		markup.add(btn2)
-		markup.add(btn3)
-		markup.add(btn4)
+		markup.add(btn1, btn2)
+		markup.add(btn3, btn4)
 	except Exception as ex:
 		print('gen_murkup_admin:', ex)
 	finally:
@@ -38,7 +36,7 @@ def gen_markup_profile():
 		markup = types.InlineKeyboardMarkup()
 
 		btn1 = types.InlineKeyboardButton(text="Редактировать профиль", callback_data='edit_profile')
-		btn2 = types.InlineKeyboardButton(text='<< Назад', callback_data='delete_user:Back_to_user_menu')
+		btn2 = types.InlineKeyboardButton(text='<< Назад', callback_data='user:Back_to_menu')
 		markup.add(btn1)
 		markup.add(btn2)
 	except Exception as ex:
@@ -46,6 +44,21 @@ def gen_markup_profile():
 	finally:
 		return markup
 
+
+def gen_markup_confirm_profile():
+	try:
+		markup = types.InlineKeyboardMarkup()
+
+		btn1 = types.InlineKeyboardButton(text="Сохранить профиль без фото",
+										  callback_data='confirm_profile_without_photo')
+		btn2 = types.InlineKeyboardButton(text='<< Назад', callback_data='user:Back_to_menu')
+
+		markup.add(btn1)
+		markup.add(btn2)
+	except Exception as ex:
+		print('gen_markup_profile:', ex)
+	finally:
+		return markup
 
 
 def gen_markup_users_inactive(_list_users_inactive):
@@ -59,10 +72,10 @@ def gen_markup_users_inactive(_list_users_inactive):
 				markup.add(btn)
 			btn = types.InlineKeyboardButton(text='Активировать всех', callback_data='activate_user:All')
 			markup.add(btn)
-			btn = types.InlineKeyboardButton(text='<< Назад', callback_data='activate_user:Back_to_admin_menu')
+			btn = types.InlineKeyboardButton(text='<< Назад', callback_data='admin:Back_to_menu')
 			markup.add(btn)
 		else:
-			btn = types.InlineKeyboardButton(text='<< Назад', callback_data='activate_user:Back_to_admin_menu')
+			btn = types.InlineKeyboardButton(text='<< Назад', callback_data='admin:Back_to_menu')
 			markup.add(btn)
 	except Exception as ex:
 		print('gen_murkup_users_inactive:', ex)
@@ -78,7 +91,7 @@ def gen_markup_users(_list_users):
 			callback_data_text = f'delete_user:{_list_users[i][0]}'
 			btn = types.InlineKeyboardButton(text=button_text, callback_data=callback_data_text)
 			markup.add(btn)
-		btn = types.InlineKeyboardButton(text='<< Назад', callback_data='delete_user:Back_to_admin_menu')
+		btn = types.InlineKeyboardButton(text='<< Назад', callback_data='admin:Back_to_menu')
 		markup.add(btn)
 	except Exception as ex:
 		print('gen_murkup_users:', ex)

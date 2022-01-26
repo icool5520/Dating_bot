@@ -50,7 +50,7 @@ def add_user(_user_id, _name):
 		sql = f"""INSERT INTO users(user_id, name, state, data) VALUES(?, ?, ?, ?);"""
 		conn = sqlite3.connect(db_file)
 		cur = conn.cursor()
-		cur.execute(sql, (_user_id, _name, 'inactive', '-*-*-'))
+		cur.execute(sql, (_user_id, _name, 'inactive', '-*-*-*-'))
 		conn.commit()
 		cur.close()
 	except Exception as ex:
@@ -143,7 +143,26 @@ def get_user_profile(_user_id):
 	finally:
 		if conn is not None:
 			conn.close()
-		return (data[0],data[1].split('*')[0], data[1].split('*')[1], data[1].split('*')[2])
+		return (data[0],data[1].split('*')[0], data[1].split('*')[1], data[1].split('*')[2], data[1].split('*')[3])
+
+# def get_user_data(_user_id):
+# 	# Достаем информацию из профиля юзера для добавления фото/ Возможно уже не нужен!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# 	db_file = "db.db"
+# 	conn = None
+# 	data = None
+# 	try:
+# 		sql = f"""SELECT data FROM users WHERE user_id = {_user_id}"""
+# 		conn = sqlite3.connect(db_file)
+# 		cur = conn.cursor()
+# 		cur.execute(sql)
+# 		data = cur.fetchone()
+# 		cur.close()
+# 	except Exception as ex:
+# 		print('get_user_data:', ex)
+# 	finally:
+# 		if conn is not None:
+# 			conn.close()
+# 		return data
 
 
 
@@ -208,8 +227,7 @@ def upd_user_profile(_user_id, _name, _data):
 	db_file = "db.db"
 	conn = None
 	try:
-		sql = f"""UPDATE user SET name='{_name}' WHERE user_id={_user_id},
-								  data='{_data}' WHERE user_id={_user_id};"""
+		sql = f"""UPDATE users SET name='{_name}', data='{_data}' WHERE user_id={_user_id};"""
 		conn = sqlite3.connect(db_file)
 		cur = conn.cursor()
 		cur.execute(sql)
@@ -220,6 +238,24 @@ def upd_user_profile(_user_id, _name, _data):
 	finally:
 		if conn is not None:
 			conn.close()
+
+
+# def upd_user_profile_data(_user_id, _data):
+# 	# Меняем данные профиля юзера/ Возможно уже не нужен!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# 	db_file = "db.db"
+# 	conn = None
+# 	try:
+# 		sql = f"""UPDATE users SET data='{_data}' WHERE user_id={_user_id};"""
+# 		conn = sqlite3.connect(db_file)
+# 		cur = conn.cursor()
+# 		cur.execute(sql)
+# 		conn.commit()
+# 		cur.close()
+# 	except Exception as ex:
+# 		print('up_state_profile_data:', ex)
+# 	finally:
+# 		if conn is not None:
+# 			conn.close()
 
 
 def get_state_admin(_user_id):
@@ -263,7 +299,7 @@ def get_state_user(_user_id):
 
 
 def get_name_user(_user_id):
-	# Считываем состояние юзера
+	# Считываем имя юзера
 	db_file = "db.db"
 	conn = None
 	data = None
