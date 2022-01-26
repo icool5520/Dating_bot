@@ -126,7 +126,7 @@ def get_users_inactive():
 		return data
 
 
-def get_user_profile(_user_id):
+def get_user_myprofile(_user_id):
 	# Достаем информацию из профиля юзера
 	db_file = "db.db"
 	conn = None
@@ -139,7 +139,7 @@ def get_user_profile(_user_id):
 		data = cur.fetchone()
 		cur.close()
 	except Exception as ex:
-		print('get_user_profile:', ex)
+		print('get_user_myprofile:', ex)
 	finally:
 		if conn is not None:
 			conn.close()
@@ -222,7 +222,7 @@ def upd_state_user(_user_id, _state):
 			conn.close()
 
 
-def upd_user_profile(_user_id, _name, _data):
+def upd_user_myprofile(_user_id, _name, _data):
 	# Меняем данные профиля юзера
 	db_file = "db.db"
 	conn = None
@@ -234,13 +234,13 @@ def upd_user_profile(_user_id, _name, _data):
 		conn.commit()
 		cur.close()
 	except Exception as ex:
-		print('up_state_profile:', ex)
+		print('up_state_myprofile:', ex)
 	finally:
 		if conn is not None:
 			conn.close()
 
 
-# def upd_user_profile_data(_user_id, _data):
+# def upd_user_myprofile_data(_user_id, _data):
 # 	# Меняем данные профиля юзера/ Возможно уже не нужен!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # 	db_file = "db.db"
 # 	conn = None
@@ -252,7 +252,7 @@ def upd_user_profile(_user_id, _name, _data):
 # 		conn.commit()
 # 		cur.close()
 # 	except Exception as ex:
-# 		print('up_state_profile_data:', ex)
+# 		print('up_state_myprofile_data:', ex)
 # 	finally:
 # 		if conn is not None:
 # 			conn.close()

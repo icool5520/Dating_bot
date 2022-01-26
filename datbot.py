@@ -41,87 +41,84 @@ def admin_start(message):
 		print('admin_start:', ex)
 
 
-@bot.message_handler(commands=['edit_profile'])
-def edit_profile(message):
+@bot.message_handler(commands=['edit_myprofile'])
+def edit_myprofile(message):
 	try:
 		cid = message.chat.id
 		uid = message.from_user.id
 		if cid == uid:
-			db_cmd.upd_state_user(uid, "view_profile")
-			profile_data = db_cmd.get_user_profile(uid)
-			if profile_data[4] != '-':
-				bot.send_photo(chat_id=cid, photo=f"{profile_data[4]}", caption=f"Мой профиль\n{'-'*25}\nИмя:" +
-				f" {profile_data[0]}\nВозраст: {profile_data[1]}\nГород: {profile_data[2]}\nО себе: {profile_data[3]}")
+			db_cmd.upd_state_user(uid, "view_myprofile")
+			myprofile_data = db_cmd.get_user_myprofile(uid)
+			if myprofile_data[4] != '-':
+				bot.send_photo(chat_id=cid, photo=f"{myprofile_data[4]}", caption=f"Мой профиль\n{'-'*25}\nИмя:" +
+				f" {myprofile_data[0]}\nВозраст: {myprofile_data[1]}\nГород: {myprofile_data[2]}\nО себе: {myprofile_data[3]}")
 			else:
-				bot.send_message(chat_id=cid, text=f"Мой профиль\n--------------\nИмя: {profile_data[0]}\n" +
-				f" Возраст: {profile_data[1]}\nГород: {profile_data[2]}\nО себе: {profile_data[3]}")
-			bot.send_message(chat_id=cid, text="Выберите действие", reply_markup=markup.gen_markup_profile())
+				bot.send_message(chat_id=cid, text=f"Мой профиль\n--------------\nИмя: {myprofile_data[0]}\n" +
+				f" Возраст: {myprofile_data[1]}\nГород: {myprofile_data[2]}\nО себе: {myprofile_data[3]}")
+			bot.send_message(chat_id=cid, text="Выберите действие", reply_markup=markup.gen_markup_myprofile())
 	except Exception as ex:
-		print('edit_profile:', ex)
+		print('edit_myprofile:', ex)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "user_info")
-def callback_edit_profile(call):
+def callback_edit_myprofile(call):
 	try:
 		cid = call.message.chat.id
 		uid = call.from_user.id
 		if cid == uid:
-			db_cmd.upd_state_user(uid, "view_profile")
-			profile_data = db_cmd.get_user_profile(uid)
-			print(profile_data)
-			if profile_data[4] != '-':
-				bot.send_photo(chat_id=cid, photo=f"{profile_data[4]}", caption=f"Мой профиль\n{'-' * 25}\nИмя:" +
-				f" {profile_data[0]}\nВозраст: {profile_data[1]}\nГород: {profile_data[2]}\nО себе: {profile_data[3]}")
+			db_cmd.upd_state_user(uid, "view_myprofile")
+			myprofile_data = db_cmd.get_user_myprofile(uid)
+			print(myprofile_data)
+			if myprofile_data[4] != '-':
+				bot.send_photo(chat_id=cid, photo=f"{myprofile_data[4]}", caption=f"Мой профиль\n{'-' * 25}\nИмя:" +
+				f" {myprofile_data[0]}\nВозраст: {myprofile_data[1]}\nГород: {myprofile_data[2]}\nО себе: {myprofile_data[3]}")
 			else:
-				bot.send_message(chat_id=cid, text=f"Мой профиль\n--------------\nИмя: {profile_data[0]}\n" +
-								   f" Возраст: {profile_data[1]}\nГород: {profile_data[2]}\nО себе: {profile_data[3]}")
-			bot.send_message(chat_id=cid, text="Выберите действие", reply_markup=markup.gen_markup_profile())
+				bot.send_message(chat_id=cid, text=f"Мой профиль\n--------------\nИмя: {myprofile_data[0]}\n" +
+								   f" Возраст: {myprofile_data[1]}\nГород: {myprofile_data[2]}\nО себе: {myprofile_data[3]}")
+			bot.send_message(chat_id=cid, text="Выберите действие", reply_markup=markup.gen_markup_myprofile())
 	except Exception as ex:
-		print('callback_edit_profile:', ex)
+		print('callback_edit_myprofile:', ex)
 
 
-@bot.callback_query_handler(func=lambda call: call.data == "edit_profile")
-def callback_edit_profile(call):
+@bot.callback_query_handler(func=lambda call: call.data == "edit_myprofile")
+def callback_edit_myprofile(call):
 	try:
 		cid = call.message.chat.id
 		uid = call.from_user.id
 		if cid == uid:
-			db_cmd.upd_state_user(uid, "edit_profile_name")
+			db_cmd.upd_state_user(uid, "edit_myprofile_name")
 			bot.send_message(chat_id=cid, text="Введите Имя (оставьте поле пустым чтобы оставить текущее имя):")
 	except Exception as ex:
-		print('callback_edit_profile:', ex)
+		print('callback_edit_myprofile:', ex)
 
 
 @bot.message_handler(content_types=["text"])
-def edit_profile(message):
+def edit_myprofile(message):
 	cid = message.chat.id
 	uid = message.from_user.id
-	global profile_data
+	global myprofile_data
 	try:
-		if cid == uid and db_cmd.get_state_user(uid)[0] == "edit_profile_name":
-			profile_data = [message.text.replace('*', '')]
-			db_cmd.upd_state_user(uid, "edit_profile_age")
+		if cid == uid and db_cmd.get_state_user(uid)[0] == "edit_myprofile_name":
+			myprofile_data = [message.text.replace('*', '')]
+			db_cmd.upd_state_user(uid, "edit_myprofile_age")
 			bot.send_message(chat_id=cid, text="Введите Ваш возраст:")
-		elif cid == uid and db_cmd.get_state_user(uid)[0] == "edit_profile_age":
-			profile_data.append(message.text.replace('*', ''))
-			db_cmd.upd_state_user(uid, "edit_profile_city")
+		elif cid == uid and db_cmd.get_state_user(uid)[0] == "edit_myprofile_age":
+			myprofile_data.append(message.text.replace('*', ''))
+			db_cmd.upd_state_user(uid, "edit_myprofile_city")
 			bot.send_message(chat_id=cid, text="Введите город:")
-		elif cid == uid and db_cmd.get_state_user(uid)[0] == "edit_profile_city":
-			profile_data.append(message.text.replace('*', ''))
-			db_cmd.upd_state_user(uid, "edit_profile_about")
+		elif cid == uid and db_cmd.get_state_user(uid)[0] == "edit_myprofile_city":
+			myprofile_data.append(message.text.replace('*', ''))
+			db_cmd.upd_state_user(uid, "edit_myprofile_about")
 			bot.send_message(chat_id=cid, text="Введите данные о себе:")
-		elif cid == uid and db_cmd.get_state_user(uid)[0] == "edit_profile_about":
-			profile_data.append(message.text.replace('*', ''))
+		elif cid == uid and db_cmd.get_state_user(uid)[0] == "edit_myprofile_about":
+			myprofile_data.append(message.text.replace('*', ''))
 			bot.send_message(chat_id=cid, text="Для добавления фотографии профиля отправьте боту фото",
-							 reply_markup=markup.gen_markup_confirm_profile())
-
-			# data = f'{profile_data[1]}*{profile_data[2]}*{profile_data[3]}'
-			# db_cmd.upd_user_profile(uid, profile_data[0], data)
-			db_cmd.upd_state_user(uid, "edit_profile_photo")
+							 reply_markup=markup.gen_markup_confirm_myprofile())
+			db_cmd.upd_state_user(uid, "edit_myprofile_photo")
 	except Exception as ex:
-		print('edit_profile:', ex)
+		print('edit_myprofile:', ex)
 
-#****************************************************************************
+
 @bot.message_handler(content_types=["photo"])
 def add_photo(message):
 	cid = message.chat.id
@@ -129,25 +126,22 @@ def add_photo(message):
 	try:
 		if cid == uid:
 			file_info = bot.get_file(message.photo[len(message.photo)-1].file_id)
-			data = f'{profile_data[1]}*{profile_data[2]}*{profile_data[3]}*{file_info.file_id}'
-			db_cmd.upd_user_profile(uid, profile_data[0], data)
+			data = f'{myprofile_data[1]}*{myprofile_data[2]}*{myprofile_data[3]}*{file_info.file_id}'
+			db_cmd.upd_user_myprofile(uid, myprofile_data[0], data)
 			bot.send_message(chat_id=cid, text="Главное меню", reply_markup=markup.gen_markup_user())
 			db_cmd.upd_state_user(uid, "main_menu")
-
 	except Exception as ex:
 		print('add_photo:', ex)
 
 
-@bot.callback_query_handler(func=lambda call: call.data.endswith("confirm_profile_without_photo"))
+@bot.callback_query_handler(func=lambda call: call.data.endswith("confirm_myprofile_without_photo"))
 def back_to_menu(call):
 	try:
 		cid = call.message.chat.id
 		uid = call.from_user.id
 		if cid == uid:
-			data = f'{profile_data[1]}*{profile_data[2]}*{profile_data[3]}*-'
-			db_cmd.upd_user_profile(uid, profile_data[0], data)
-
-
+			data = f'{myprofile_data[1]}*{myprofile_data[2]}*{myprofile_data[3]}*-'
+			db_cmd.upd_user_myprofile(uid, myprofile_data[0], data)
 	except Exception as ex:
 		print('back_to_menu:', ex)
 

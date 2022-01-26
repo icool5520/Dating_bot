@@ -6,8 +6,8 @@ def gen_markup_admin():
 
 		btn1 = types.InlineKeyboardButton(text="\U00002b50 Активировать участников", callback_data='activate_user')
 		btn2 = types.InlineKeyboardButton(text="\U0000274c Удалить участников", callback_data='delete_user')
-		btn3 = types.InlineKeyboardButton(text="Добавить анкету", callback_data='add_dating_profile')
-		btn4 = types.InlineKeyboardButton(text="Удалить анкету", callback_data='delete_dating_profile')
+		btn3 = types.InlineKeyboardButton(text="Добавить анкету", callback_data='add_dating_myprofile')
+		btn4 = types.InlineKeyboardButton(text="Удалить анкету", callback_data='delete_dating_myprofile')
 		
 		markup.add(btn1, btn2)
 		markup.add(btn3, btn4)
@@ -22,7 +22,7 @@ def gen_markup_user():
 		markup = types.InlineKeyboardMarkup()
 
 		btn1 = types.InlineKeyboardButton(text="Мой профиль", callback_data='user_info')
-		btn2 = types.InlineKeyboardButton(text="Поиск анкеты", callback_data='search_dating_profile')
+		btn2 = types.InlineKeyboardButton(text="Поиск анкеты", callback_data='search_dating_myprofile')
 		markup.add(btn1)
 		markup.add(btn2)
 	except Exception as ex:
@@ -31,32 +31,32 @@ def gen_markup_user():
 		return markup
 
 
-def gen_markup_profile():
+def gen_markup_myprofile():
 	try:
 		markup = types.InlineKeyboardMarkup()
 
-		btn1 = types.InlineKeyboardButton(text="Редактировать профиль", callback_data='edit_profile')
+		btn1 = types.InlineKeyboardButton(text="Редактировать профиль", callback_data='edit_myprofile')
 		btn2 = types.InlineKeyboardButton(text='<< Назад', callback_data='user:Back_to_menu')
 		markup.add(btn1)
 		markup.add(btn2)
 	except Exception as ex:
-		print('gen_markup_profile:', ex)
+		print('gen_markup_myprofile:', ex)
 	finally:
 		return markup
 
 
-def gen_markup_confirm_profile():
+def gen_markup_confirm_myprofile():
 	try:
 		markup = types.InlineKeyboardMarkup()
 
 		btn1 = types.InlineKeyboardButton(text="Сохранить профиль без фото",
-										  callback_data='confirm_profile_without_photo')
+										  callback_data='confirm_myprofile_without_photo')
 		btn2 = types.InlineKeyboardButton(text='<< Назад', callback_data='user:Back_to_menu')
 
 		markup.add(btn1)
 		markup.add(btn2)
 	except Exception as ex:
-		print('gen_markup_profile:', ex)
+		print('gen_markup_myprofile:', ex)
 	finally:
 		return markup
 
