@@ -50,11 +50,11 @@ def edit_myprofile(message):
 			db_cmd.upd_state_user(uid, "view_myprofile")
 			myprofile_data = db_cmd.get_user_myprofile(uid)
 			if myprofile_data[4] != '-':
-				bot.send_photo(chat_id=cid, photo=f"{myprofile_data[4]}", caption=f"Мой профиль\n{'-'*25}\nИмя:" +
-				f" {myprofile_data[0]}\nВозраст: {myprofile_data[1]}\nГород: {myprofile_data[2]}\nО себе: {myprofile_data[3]}")
+				photo_id = f"{myprofile_data[4]}"
 			else:
-				bot.send_message(chat_id=cid, text=f"Мой профиль\n--------------\nИмя: {myprofile_data[0]}\n" +
-				f" Возраст: {myprofile_data[1]}\nГород: {myprofile_data[2]}\nО себе: {myprofile_data[3]}")
+				photo_id = "AgACAgIAAxkBAAIEpWHxHvFZMAlLAmuluP1Nz-z_lugQAAIHuDEbBi6JSz10nVNPG1V-AQADAgADeAADIwQ"
+			bot.send_photo(chat_id=cid, photo=photo_id, caption=f"Мой профиль\n{'-'*25}\nИмя:" +
+			f" {myprofile_data[0]}\nВозраст: {myprofile_data[1]}\nГород: {myprofile_data[2]}\nО себе: {myprofile_data[3]}")
 			bot.send_message(chat_id=cid, text="Выберите действие", reply_markup=markup.gen_markup_myprofile())
 	except Exception as ex:
 		print('edit_myprofile:', ex)
@@ -68,13 +68,11 @@ def callback_edit_myprofile(call):
 		if cid == uid:
 			db_cmd.upd_state_user(uid, "view_myprofile")
 			myprofile_data = db_cmd.get_user_myprofile(uid)
-			print(myprofile_data)
 			if myprofile_data[4] != '-':
-				bot.send_photo(chat_id=cid, photo=f"{myprofile_data[4]}", caption=f"Мой профиль\n{'-' * 25}\nИмя:" +
-				f" {myprofile_data[0]}\nВозраст: {myprofile_data[1]}\nГород: {myprofile_data[2]}\nО себе: {myprofile_data[3]}")
+				photo_id = f"{myprofile_data[4]}"
 			else:
-				bot.send_message(chat_id=cid, text=f"Мой профиль\n--------------\nИмя: {myprofile_data[0]}\n" +
-								   f" Возраст: {myprofile_data[1]}\nГород: {myprofile_data[2]}\nО себе: {myprofile_data[3]}")
+				photo_id = "AgACAgIAAxkBAAIEpWHxHvFZMAlLAmuluP1Nz-z_lugQAAIHuDEbBi6JSz10nVNPG1V-AQADAgADeAADIwQ"
+			bot.send_photo(chat_id=cid, photo=photo_id, caption=f"Мой профиль\n{'-' * 25}\nИмя: {myprofile_data[0]}\nВозраст: {myprofile_data[1]}\nГород: {myprofile_data[2]}\nО себе: {myprofile_data[3]}")
 			bot.send_message(chat_id=cid, text="Выберите действие", reply_markup=markup.gen_markup_myprofile())
 	except Exception as ex:
 		print('callback_edit_myprofile:', ex)
