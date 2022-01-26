@@ -18,6 +18,7 @@ def create_tables():
 
 
 def check_user_id(_user_id, _name):
+	# проверка наличия пользователя в базе, если нет - вызов функции добавления
 	db_file = "db.db"
 	conn = None
 	check = False
@@ -42,14 +43,14 @@ def check_user_id(_user_id, _name):
 
 
 def add_user(_user_id, _name):
+	# добавление нового пользователя
 	db_file = "db.db"
 	conn = None
-	
 	try:
 		sql = f"""INSERT INTO users(user_id, name, state, data) VALUES(?, ?, ?, ?);"""
 		conn = sqlite3.connect(db_file)
 		cur = conn.cursor()
-		cur.execute(sql, (_user_id, _name, 'inactive', ''))
+		cur.execute(sql, (_user_id, _name, 'inactive', '-*-*-*-'))
 		conn.commit()
 		cur.close()
 	except Exception as ex:
@@ -60,6 +61,7 @@ def add_user(_user_id, _name):
 
 
 def check_admin(_user_id):
+	# Проверка пользователя на права админа
 	db_file = "db.db"
 	conn = None
 	check = False
@@ -82,6 +84,7 @@ def check_admin(_user_id):
 
 
 def check_user_state(_user_id):
+	# Проверка активирован ли пользователь. True если да
 	db_file = "db.db"
 	conn = None
 	check = False
@@ -109,7 +112,7 @@ def get_users_inactive():
 	conn = None
 	data = None
 	try:
-		sql = f"""SELECT user_id, name FROM users WHERE state='inactive'"""
+		sql = f"""SELECT user_id, name FROM users WHERE state LIKE '%inactive%'"""
 		conn = sqlite3.connect(db_file)
 		cur = conn.cursor()
 		cur.execute(sql)
@@ -123,7 +126,48 @@ def get_users_inactive():
 		return data
 
 
+def get_user_profile(_user_id):
+	# Достаем информацию из профиля юзера
+	db_file = "db.db"
+	conn = None
+	data = None
+	try:
+		sql = f"""SELECT name, data FROM users WHERE user_id = {_user_id}"""
+		conn = sqlite3.connect(db_file)
+		cur = conn.cursor()
+		cur.execute(sql)
+		data = cur.fetchone()
+		cur.close()
+	except Exception as ex:
+		print('get_user_profile:', ex)
+	finally:
+		if conn is not None:
+			conn.close()
+		return (data[0],data[1].split('*')[0], data[1].split('*')[1], data[1].split('*')[2], data[1].split('*')[3])
+
+# def get_user_data(_user_id):
+# 	# Достаем информацию из профиля юзера для добавления фото/ Возможно уже не нужен!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# 	db_file = "db.db"
+# 	conn = None
+# 	data = None
+# 	try:
+# 		sql = f"""SELECT data FROM users WHERE user_id = {_user_id}"""
+# 		conn = sqlite3.connect(db_file)
+# 		cur = conn.cursor()
+# 		cur.execute(sql)
+# 		data = cur.fetchone()
+# 		cur.close()
+# 	except Exception as ex:
+# 		print('get_user_data:', ex)
+# 	finally:
+# 		if conn is not None:
+# 			conn.close()
+# 		return data
+
+
+
 def get_users_all():
+	# Список всех пользователей для анмина
 	db_file = "db.db"
 	conn = None
 	data = None
@@ -143,6 +187,7 @@ def get_users_all():
 
 
 def upd_state_admin(_user_id, _state):
+	# Меняем состояние админа
 	db_file = "db.db"
 	conn = None
 	try:
@@ -159,7 +204,62 @@ def upd_state_admin(_user_id, _state):
 			conn.close()
 
 
+def upd_state_user(_user_id, _state):
+	# Меняем состояние юзера
+	db_file = "db.db"
+	conn = None
+	try:
+		sql = f"""UPDATE users SET state='{_state}' WHERE user_id={_user_id};"""
+		conn = sqlite3.connect(db_file)
+		cur = conn.cursor()
+		cur.execute(sql)
+		conn.commit()
+		cur.close()
+	except Exception as ex:
+		print('up_state_user:', ex)
+	finally:
+		if conn is not None:
+			conn.close()
+
+
+def upd_user_profile(_user_id, _name, _data):
+	# Меняем данные профиля юзера
+	db_file = "db.db"
+	conn = None
+	try:
+		sql = f"""UPDATE users SET name='{_name}', data='{_data}' WHERE user_id={_user_id};"""
+		conn = sqlite3.connect(db_file)
+		cur = conn.cursor()
+		cur.execute(sql)
+		conn.commit()
+		cur.close()
+	except Exception as ex:
+		print('up_state_profile:', ex)
+	finally:
+		if conn is not None:
+			conn.close()
+
+
+# def upd_user_profile_data(_user_id, _data):
+# 	# Меняем данные профиля юзера/ Возможно уже не нужен!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# 	db_file = "db.db"
+# 	conn = None
+# 	try:
+# 		sql = f"""UPDATE users SET data='{_data}' WHERE user_id={_user_id};"""
+# 		conn = sqlite3.connect(db_file)
+# 		cur = conn.cursor()
+# 		cur.execute(sql)
+# 		conn.commit()
+# 		cur.close()
+# 	except Exception as ex:
+# 		print('up_state_profile_data:', ex)
+# 	finally:
+# 		if conn is not None:
+# 			conn.close()
+
+
 def get_state_admin(_user_id):
+	# Считываем состояние админа
 	db_file = "db.db"
 	conn = None
 	data = None
@@ -178,7 +278,49 @@ def get_state_admin(_user_id):
 		return data
 
 
-def upd_state_users(_user_id, _state):
+def get_state_user(_user_id):
+	# Считываем состояние юзера
+	db_file = "db.db"
+	conn = None
+	data = None
+	try:
+		sql = f"""SELECT state FROM users WHERE user_id={_user_id}"""
+		conn = sqlite3.connect(db_file)
+		cur = conn.cursor()
+		cur.execute(sql)
+		data = cur.fetchone()
+		cur.close()
+	except Exception as ex:
+		print('get_state_user:', ex)
+	finally:
+		if conn is not None:
+			conn.close()
+		return data
+
+
+def get_name_user(_user_id):
+	# Считываем имя юзера
+	db_file = "db.db"
+	conn = None
+	data = None
+	try:
+		sql = f"""SELECT name FROM users WHERE user_id={_user_id}"""
+		conn = sqlite3.connect(db_file)
+		cur = conn.cursor()
+		cur.execute(sql)
+		data = cur.fetchone()
+		cur.close()
+	except Exception as ex:
+		print('get_name_user:', ex)
+	finally:
+		if conn is not None:
+			conn.close()
+		return data
+
+
+def upd_state_inactive_users(_user_id, _state):
+	# Меняем состояние юзера или нескольких
+	# Используется при активации админом
 	db_file = "db.db"
 	conn = None
 	if len(_user_id) == 1:
@@ -193,13 +335,14 @@ def upd_state_users(_user_id, _state):
 		conn.commit()
 		cur.close()
 	except Exception as ex:
-		print("upd_state_users:", ex)
+		print("upd_state_inactive_users:", ex)
 	finally:
 		if conn is not None:
 			conn.close()
 
 
 def delete_user(_user_id):
+	# Удаление пользователя по ID
 	db_file = "db.db"
 	conn = None
 	try:
@@ -215,84 +358,5 @@ def delete_user(_user_id):
 		if conn is not None:
 			conn.close()
 
-
-'''
-def check_user_id(user_id):
-	db_file = "db.db"
-	conn = None
-	check = False
-	try:
-		sql = f"""SELECT * FROM users WHERE user_id = {user_id}"""
-		conn = sqlite3.connect(db_file)
-		cur = conn.cursor()
-		cur.execute(sql)
-		data = cur.fetchone()
-		if not data:
-			cur.close()
-			add_user(user_id)
-			check = True
-		else:
-			cur.close()
-	except Exception as ex:
-		print('check_user_id:', ex)
-	finally:
-		if conn is not None:
-			conn.close()
-		return check
-
-def add_user(user_id):
-	db_file = "db.db"
-	conn = None
-	
-	try:
-		sql = f"""INSERT INTO users(user_id, state, data) VALUES(?, ?, ?);"""
-		conn = sqlite3.connect(db_file)
-		cur = conn.cursor()
-		cur.execute(sql, (user_id, 'start', ''))
-		conn.commit()
-		cur.close()
-	except Exception as ex:
-		print('add_user:', ex)
-	finally:
-		if conn is not None:
-			conn.close()
-		return check
-
-def get_state_user(user_id):
-	db_file = "db.db"
-	conn = None
-	data = None
-	try:
-		sql = f"""SELECT state FROM users WHERE user_id={user_id}"""
-		conn = sqlite3.connect(db_file)
-		cur = conn.cursor()
-		cur.execute(sql)
-		data = cur.fetchone()
-		cur.close()
-	except Exception as ex:
-		print('get_state_user:', ex)
-	finally:
-		if conn is not None:
-			conn.close()
-		print(data)
-		return data
-
-
-def up_state_user(user_id, state):
-	db_file = "db.db"
-	conn = None
-	try:
-		sql = f"""UPDATE users SET state='{state}' WHERE user_id={user_id};"""
-		conn = sqlite3.connect(db_file)
-		cur = conn.cursor()
-		cur.execute(sql)
-		conn.commit()
-		cur.close()
-	except Exception as ex:
-		print('up_state_user:', ex)
-	finally:
-		if conn is not None:
-			conn.close()
-'''
 
 create_tables()
