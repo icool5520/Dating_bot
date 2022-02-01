@@ -4,7 +4,6 @@ import db_cmd
 from settings import token
 
 
-
 bot = telebot.TeleBot(token)
 
 
